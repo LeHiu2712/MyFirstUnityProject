@@ -43,7 +43,7 @@ public class PlayerCombat : MonoBehaviour
 
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(attackDamage);
+                enemyHealth.TakeDamage(attackDamage, transform.position);
             }
         }
     }
