@@ -39,9 +39,14 @@ public class EnemyHealth : MonoBehaviour
     private void Awake()
     {
         currentHealth = maxHealth;
-        enemySpawner = FindFirstObjectByType<EnemySpawner>();
+        // enemySpawner = FindFirstObjectByType<EnemySpawner>();
         rb = GetComponent<Rigidbody2D>();
         enemyMovement = GetComponent<EnemyMovement>();
+    }
+
+    public void SetSpawner(EnemySpawner spawner)
+    {
+        enemySpawner = spawner;
     }
 
     public void TakeDamage(int damage, Vector2 attackerPosition)

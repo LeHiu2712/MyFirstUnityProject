@@ -32,29 +32,45 @@ public class PlayerInteraction : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Coin"))
+        if (playerInventory == null)
         {
             return;
         }
 
-        if (playerInventory == null || gameScore == null)
+        //1.Xu ly coin
+        if (collision.CompareTag("Coin"))
         {
+            if (gameScore == null)
+            {
+                return;
+            }
+
+            string coinName = collision.gameObject.name.Trim();
+
+            var points = coinName switch
+            {
+                "BronzeCoin" => 1,
+                "SilverCoin" => 5,
+                "GoldenCoin" => 10,
+                _ => 1,
+            };
+            playerInventory.AddCoin(1);
+            gameScore.AddScrore(points);
+
+            Destroy(collision.gameObject);
             return;
         }
 
-        string coinName = collision.gameObject.name.Trim();
-
-        var points = coinName switch
+        //2.Xu ly item
+        ItemPickup itemPickup = collision.GetComponent<ItemPickup>();
+        if (itemPickup != null)
         {
-            "BronzeCoin" => 1,
-            "SilverCoin" => 5,
-            "GoldenCoin" => 10,
-            _ => 1,
-        };
-        playerInventory.AddCoin(1);
-        gameScore.AddScrore(points);
+            Item item = itemPickup.CreateItem();
+            playerInventory.AddItem(item);
+            Debug.Log("Picked up: " + item.ItemName);
+            Destroy(collision.gameObject);
+        }
 
-        Destroy(collision.gameObject);
         // Debug.Log("You received a coin!");
     }
 }

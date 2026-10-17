@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -8,12 +9,36 @@ public class EnemySpawner : MonoBehaviour
 
     private GameObject enemyPrefab;
 
+    [SerializeField]
+    private float respawnDelay = 2f;
+
+    private void Start()
+    {
+        SpawnEnemyImmediately();
+    }
+    public void SpawnEnemyImmediately()
+    {
+        GameObject enemy = Instantiate(
+            enemyPrefab, transform.position, Quaternion.identity
+        );
+
+
+        if (enemy.TryGetComponent<EnemyHealth>(out var enemyHealth))
+        {
+            enemyHealth.SetSpawner(this);
+        }
+
+    }
+
+    private IEnumerator SpawnEnemyWithDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        SpawnEnemyImmediately();
+    }
+
     public void SpawnEnemy()
     {
-        Instantiate(
-            enemyPrefab,
-            transform.position,
-            Quaternion.identity
-        );
+        StartCoroutine(SpawnEnemyWithDelay());
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
@@ -6,6 +7,8 @@ public class PlayerInventory : MonoBehaviour
     private CoinCounterUI coinCounterUI;
 
     private int coinCount;
+
+    public List<Item> items = new();
 
     public int CoinCount
     {
@@ -35,4 +38,30 @@ public class PlayerInventory : MonoBehaviour
             coinCounterUI.SetCoinCount(coinCount);
         }
     }
+
+    public Item FindItem(int id)
+    {
+        foreach (Item item in items)
+        {
+            if (item.Id == id)
+            {
+                return item;
+            }
+        }
+
+        return null;
+    }
+
+    public void AddItem(Item newItem)
+    {
+        Item existingItem = FindItem(newItem.Id);
+
+        if (existingItem != null)
+        {
+            existingItem.Quantity += newItem.Quantity;
+        }
+
+        items.Add(newItem);
+    }
+
 }
