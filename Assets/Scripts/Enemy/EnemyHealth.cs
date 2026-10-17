@@ -13,13 +13,14 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField]
     private GameScore gameScore;
 
-
-
     [SerializeField]
     private int maxHealth = 50;
 
     [SerializeField]
     private float knockbackForce = 5f;
+    [SerializedField]
+
+    private float knockbackDuration = 0.2f;
 
     private int currentHealth;
 
@@ -29,9 +30,6 @@ public class EnemyHealth : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    [SerializedField]
-
-    private float knockbackDuration = 0.2f;
 
     private EnemyMovement enemyMovement;
 

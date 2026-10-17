@@ -47,6 +47,23 @@ public class PlayerHealth : MonoBehaviour
             Die();
         }
     }
+
+    public void Heal(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        currentHealth =
+        Mathf.Min(currentHealth + amount, maxHealth);
+
+        if (healthBarUI != null)
+        {
+            healthBarUI.SetHealth(currentHealth);
+        }
+    }
+
     private void Die()
     {
         Debug.Log("Player died");
