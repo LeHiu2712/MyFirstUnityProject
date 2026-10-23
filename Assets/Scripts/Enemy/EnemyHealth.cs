@@ -10,7 +10,6 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField]
     private int scoreReward = 20;
 
-    [SerializeField]
     private GameScore gameScore;
 
     [SerializeField]
@@ -40,6 +39,8 @@ public class EnemyHealth : MonoBehaviour
         // enemySpawner = FindFirstObjectByType<EnemySpawner>();
         rb = GetComponent<Rigidbody2D>();
         enemyMovement = GetComponent<EnemyMovement>();
+
+        gameScore = FindAnyObjectByType<GameScore>();
     }
 
     public void SetSpawner(EnemySpawner spawner)
@@ -100,7 +101,7 @@ public class EnemyHealth : MonoBehaviour
 
         if (gameScore != null)
         {
-            gameScore.AddScrore(scoreReward);
+            gameScore.AddScore(scoreReward);
         }
 
         if (enemySpawner != null)

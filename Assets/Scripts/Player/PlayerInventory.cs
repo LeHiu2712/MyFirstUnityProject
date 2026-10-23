@@ -27,10 +27,12 @@ public class PlayerInventory : MonoBehaviour
     }
     private void Start()
     {
+        LoadInventory();
         if (coinCounterUI != null)
         {
             coinCounterUI.SetCoinCount(coinCount);
         }
+        RefreshUI();
     }
     public void AddCoin(int amount)
     {
@@ -40,6 +42,7 @@ public class PlayerInventory : MonoBehaviour
         }
 
         coinCount += amount;
+        SaveInventory();
 
         if (coinCounterUI != null)
         {
@@ -62,6 +65,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void AddItem(Item newItem)
     {
+        if (newItem == null) return;
         Item existingItem = FindItem(newItem.Id);
 
         if (existingItem != null)
@@ -74,6 +78,7 @@ public class PlayerInventory : MonoBehaviour
             items.Add(newItem);
         }
 
+        SaveInventory();
         RefreshUI();
     }
 
@@ -91,6 +96,7 @@ public class PlayerInventory : MonoBehaviour
             items.Remove(item);
         }
 
+        SaveInventory();
         RefreshUI();
         return true;
     }
@@ -109,6 +115,86 @@ public class PlayerInventory : MonoBehaviour
         if (inventoryUI != null)
         {
             inventoryUI.Refresh(items);
+        }
+    }
+
+    private void LoadInventory()
+    {
+        if (GameSession.Instance == null)
+        {
+            return;
+        }
+
+        coinCount = GameSession.Instance.CoinCount;
+        items = GameSession.Instance.LoadItems();
+    }
+
+    private void SaveInventory()
+    {
+        if (GameSession.Instance == null)
+        {
+            return;
+        }
+
+        GameSession.Instance.CoinCount = coinCount;
+        GameSession.Instance.SaveItems(items);
+    }
+
+    public ItemSaveData[] ExportItems()
+    {
+        ItemSaveData[] result =
+        new ItemSaveData[items.Count];
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            ItemSaveData itemData =
+            new()
+            {
+                id = items[i].Id,
+                itemName = items[i].ItemName,
+                quantity = items[i].Quantity
+            };
+
+            result[i] = itemData;
+        }
+        return result;
+    }
+
+    public void ImportItems(ItemSaveData[] savedItems)
+    {
+        items.Clear();
+
+        if (savedItems == null)
+        {
+            RefreshUI();
+            return;
+        }
+
+        foreach (ItemSaveData savedItem in savedItems)
+        {
+            if (savedItem.quantity <= 0) continue;
+
+            Item item = new(
+            savedItem.id,
+            savedItem.itemName,
+            savedItem.quantity
+            );
+
+            items.Add(item);
+        }
+        SaveInventory();
+        RefreshUI();
+    }
+
+    public void SetCoinCount(int amount)
+    {
+        coinCount = Mathf.Max(amount, 0);
+
+        SaveInventory();
+
+        if (coinCounterUI != null)
+        {
+            coinCounterUI.SetCoinCount(coinCount);
         }
     }
 }

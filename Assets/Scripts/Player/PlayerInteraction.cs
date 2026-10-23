@@ -55,7 +55,7 @@ public class PlayerInteraction : MonoBehaviour
                 _ => 1,
             };
             playerInventory.AddCoin(1);
-            gameScore.AddScrore(points);
+            gameScore.AddScore(points);
 
             Destroy(collision.gameObject);
             return;
