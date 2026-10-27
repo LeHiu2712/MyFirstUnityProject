@@ -1,47 +1,63 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(EnemyAI))]
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField]
-
-    private float moveSpeed = 2f;
+    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private float patrolSpeed = 1.5f;
 
     private Rigidbody2D rb;
 
     private float knockbackEndTime;
 
-    private Transform playerTransform;
-
+    // private Transform playerTransform;
+    private EnemyAI enemyAI;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
 
-        GameObject playerObject =
-            GameObject.FindGameObjectWithTag("Player");
-
-        if (playerObject != null)
-        {
-            playerTransform = playerObject.transform;
-        }
+        enemyAI = GetComponent<EnemyAI>();
     }
 
     private void FixedUpdate()
     {
-        if (playerTransform == null)
-        {
-            return;
-        }
+        if (Time.time < knockbackEndTime) return;
 
-        if (Time.time < knockbackEndTime)
+        Transform player;
+        float speed;
+        bool isFoundPlayer;
+
+        if (enemyAI.IsChasing)
         {
-            return;
+            player = enemyAI.Player;
+            speed = moveSpeed;
         }
+        else if (enemyAI.IsPatrolling)
+        {
+            player = enemyAI.CurrentPatrolPoint;
+            speed = patrolSpeed;
+
+            if (player == null) return;
+            isFoundPlayer = Vector2
+            .Distance(rb.position, player.position)
+            <= enemyAI.ReachDistance;
+
+            if (isFoundPlayer)
+            {
+                enemyAI.AdvancePatrolPoint();
+                return;
+            }
+        }
+        else { return; }
 
         Vector2 direction =
-            ((Vector2)playerTransform.position - rb.position).normalized;
+        ((Vector2)player.position - rb.position)
+        .normalized;
 
         Vector2 targetPosition =
-            rb.position + moveSpeed * Time.fixedDeltaTime * direction;
+        rb.position +
+        speed * Time.fixedDeltaTime * direction;
 
         rb.MovePosition(targetPosition);
     }

@@ -7,29 +7,15 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class EnemyHealth : MonoBehaviour
 {
-    [SerializeField]
-    private int scoreReward = 20;
-
+    [SerializeField] private int scoreReward = 20;
+    [SerializeField] private int maxHealth = 50;
+    [SerializeField] private float knockbackForce = 5f;
+    [SerializeField] private float knockbackDuration = 0.2f;
     private GameScore gameScore;
-
-    [SerializeField]
-    private int maxHealth = 50;
-
-    [SerializeField]
-    private float knockbackForce = 5f;
-    [SerializedField]
-
-    private float knockbackDuration = 0.2f;
-
     private int currentHealth;
-
     private bool isDead = false;
-
     private EnemySpawner enemySpawner;
-
     private Rigidbody2D rb;
-
-
     private EnemyMovement enemyMovement;
 
     [System.Obsolete]
@@ -109,6 +95,7 @@ public class EnemyHealth : MonoBehaviour
 
         Destroy(gameObject);
     }
+
 }
 
 internal class SerializedFieldAttribute : Attribute
