@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameScore gameScore;
     [SerializeField] private TMP_Text finalScoreText;
+    [SerializeField] private NetworkManager networkManager;
+    [SerializeField] private GameObject player;
 
     private bool isGameOver;
     private bool isPaused;
@@ -43,31 +45,22 @@ public class GameManager : MonoBehaviour
     }
     public void GameOver()
     {
-        if (isGameOver)
-        {
-            return;
-        }
-
+        if (isGameOver) return;
         isGameOver = true;
         isPaused = false;
 
-        if (gameScore != null && finalScoreText != null)
+        if (
+            gameScore != null &&
+            finalScoreText != null &&
+            networkManager != null &&
+            player != null
+        )
         {
-            finalScoreText.SetText(
-            "Final Score: {0:0}",
-            gameScore.Score
-            );
+            finalScoreText.SetText("Final Score: {0:0}", gameScore.Score);
+            networkManager.SendScore(player.name, gameScore.Score);
         }
-
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(true);
-        }
-        if (pausePanel != null)
-        {
-            pausePanel.SetActive(false);
-        }
-
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+        if (pausePanel != null) pausePanel.SetActive(false);
         Time.timeScale = 0f;
     }
     public void RestartGame()
